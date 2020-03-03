@@ -5,24 +5,22 @@ import Adafruit_DHT
 from influxdb import InfluxDBClient
 
 # Configure InfluxDB connection variables
-host = "192.168.6.11" # My Ubuntu NUC
+host = "192.168.75.134" # red-pi
 port = 8086 # default port
-user = "rpi-3" # the user/password created for the pi, with write access
-password = "rpi-3" 
-dbname = "sensor_data" # the database we created earlier
-interval = 60 # Sample period in seconds
+dbname = "weather" # the database we created earlier
+interval = 30 # Sample period in seconds
 
 # Create the InfluxDB client object
-client = InfluxDBClient(host, port, user, password, dbname)
+client = InfluxDBClient(host=host, port=port, database=dbname)
 
 # Enter the sensor details
 sensor = Adafruit_DHT.DHT22
 sensor_gpio = 4
 
 # think of measurement as a SQL table, it's not...but...
-measurement = "rpi-dht22"
+measurement = "bluepi-dht22"
 # location will be used as a grouping tag later
-location = "office"
+location = "outdoor"
 
 # Run until you get a ctrl^c
 try:
