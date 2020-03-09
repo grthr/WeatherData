@@ -5,7 +5,7 @@ import Adafruit_DHT
 from influxdb import InfluxDBClient
 
 # Configure InfluxDB connection variables
-host = "192.168.75.134" # red-pi
+host = "localhost" # red-pi
 port = 8086 # default port
 dbname = "weather" # the database we created earlier
 interval = 30 # Sample period in seconds
@@ -18,9 +18,9 @@ sensor = Adafruit_DHT.DHT22
 sensor_gpio = 4
 
 # think of measurement as a SQL table, it's not...but...
-measurement = "bluepi-dht22"
+measurement = "redpi-dht22"
 # location will be used as a grouping tag later
-location = "outdoor"
+location = "indoor"
 
 # Run until you get a ctrl^c
 try:
