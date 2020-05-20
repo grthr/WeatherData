@@ -4,6 +4,8 @@ import datetime
 import Adafruit_DHT
 from influxdb import InfluxDBClient
 
+print "Initializing..."
+
 # Configure InfluxDB connection variables
 host = "localhost" # red-pi
 port = 8086 # default port
@@ -22,12 +24,14 @@ measurement = "redpi-dht22"
 # location will be used as a grouping tag later
 location = "indoor"
 
+print "Finished initialization."
+
 # Run until you get a ctrl^c
 try:
     while True:
         # Read the sensor using the configured driver and gpio
         humidity, temperature = Adafruit_DHT.read_retry(sensor, sensor_gpio)
-        iso = time.ctime()
+        iso = time.asctime(time.gmtime())
         # Print for debugging, uncomment the below line
         # print("[%s] Temp: %s, Humidity: %s" % (iso, temperature, humidity)) 
         # Create the JSON data structure
