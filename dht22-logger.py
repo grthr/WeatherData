@@ -45,7 +45,10 @@ try:
           }
         ]
         # Send the JSON data to InfluxDB
-        client.write_points(data)
+        try:
+            client.write_points(data)
+        except:
+            pass
         # Wait until it's time to query again...
         time.sleep(interval)
  
