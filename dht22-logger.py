@@ -2,39 +2,34 @@ import time
 import sys
 import datetime
 import Adafruit_DHT
+import logging
 from influxdb import InfluxDBClient
+import os
 
-print "Initializing..."
+log.info('Initializing...')
 
-# Configure InfluxDB connection variables
-host = "localhost" # red-pi
-port = 8086 # default port
-dbname = "weather" # the database we created earlier
-interval = 30 # Sample period in seconds
+host = os.environ['DB_HOST']
+port = int(s.environ['DB_PORT'])
+dbname = os.environ['DB_NAME']
 
-# Create the InfluxDB client object
+sensor_gpio = int(os.environ['SENSOR_GPIO'])
+sensor = int(os.environ['SENSOR_MODEL'])
+
+measurement = os.environ['MEASUREMENT_NAME']
+interval = int(os.environ['SAMPLING_INTERVAL'])
+
 client = InfluxDBClient(host=host, port=port, database=dbname)
+log = logging.getLogger()
+log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
 
-# Enter the sensor details
-sensor = Adafruit_DHT.DHT22
-sensor_gpio = 4
+log.info('Finished initialization.')
 
-# think of measurement as a SQL table, it's not...but...
-measurement = "redpi-dht22"
-# location will be used as a grouping tag later
-location = "indoor"
-
-print "Finished initialization."
-
-# Run until you get a ctrl^c
 try:
     while True:
-        # Read the sensor using the configured driver and gpio
         humidity, temperature = Adafruit_DHT.read_retry(sensor, sensor_gpio)
         iso = time.asctime(time.gmtime())
-        # Print for debugging, uncomment the below line
-        # print("[%s] Temp: %s, Humidity: %s" % (iso, temperature, humidity)) 
-        # Create the JSON data structure
+        log.debug("[%s] Temp: %s, Humidity: %s" % (iso, temperature, humidity))
+        
         data = [
         {
           "measurement": measurement,
@@ -51,7 +46,8 @@ try:
         # Send the JSON data to InfluxDB
         try:
             client.write_points(data)
-        except:
+        except exc_info:
+            log.error('Failed to write to db.', exc_info=exc_info)
             pass
         # Wait until it's time to query again...
         time.sleep(interval)
