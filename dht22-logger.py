@@ -2,14 +2,17 @@ import time
 import sys
 import datetime
 import Adafruit_DHT
-import logging
+import logging as log
 from influxdb import InfluxDBClient
 import os
 
+
+log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
+log.getLogger().setLevel(log_level)
 log.info('Initializing...')
 
 host = os.environ.get('DB_HOST', 'localhost')
-port = int(s.environ.get('DB_PORT', 8086))
+port = int(os.environ.get('DB_PORT', 8086))
 dbname = os.environ.get('DB_NAME', 'weather')
 
 sensor_gpio = int(os.environ.get('SENSOR_GPIO', 4))
@@ -19,8 +22,6 @@ measurement = os.environ.get('MEASUREMENT_NAME', 'redpi-dht22')
 interval = int(os.environ.get('SAMPLING_INTERVAL', 30))
 
 client = InfluxDBClient(host=host, port=port, database=dbname)
-log = logging.getLogger()
-log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
 
 log.info('Finished initialization.')
 
