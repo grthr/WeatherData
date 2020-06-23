@@ -18,7 +18,8 @@ dbname = os.environ.get('DB_NAME', 'weather')
 sensor_gpio = int(os.environ.get('SENSOR_GPIO', 4))
 sensor = int(os.environ.get('SENSOR_MODEL', 22))
 
-measurement = os.environ.get('MEASUREMENT_NAME', 'indoor')
+measurement = os.environ.get('MEASUREMENT_NAME', 'data')
+location = os.environ.get('SENSOR_LOCATION', 'indoor')
 interval = int(os.environ.get('SAMPLING_INTERVAL', 30))
 
 client = InfluxDBClient(host=host, port=port, database=dbname)
@@ -34,6 +35,9 @@ try:
         data = [
         {
             "measurement": measurement,
+            "tags": {
+                "location": location,
+            },
             "time": iso,
             "fields": {
                 "temperature" : temperature,
