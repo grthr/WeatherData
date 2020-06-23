@@ -8,15 +8,15 @@ import os
 
 log.info('Initializing...')
 
-host = os.environ['DB_HOST']
-port = int(s.environ['DB_PORT'])
-dbname = os.environ['DB_NAME']
+host = os.environ.get('DB_HOST', 'localhost')
+port = int(s.environ.get('DB_PORT', 8086))
+dbname = os.environ.get('DB_NAME', 'weather')
 
-sensor_gpio = int(os.environ['SENSOR_GPIO'])
-sensor = int(os.environ['SENSOR_MODEL'])
+sensor_gpio = int(os.environ.get('SENSOR_GPIO', 4))
+sensor = int(os.environ.get('SENSOR_MODEL', 22))
 
-measurement = os.environ['MEASUREMENT_NAME']
-interval = int(os.environ['SAMPLING_INTERVAL'])
+measurement = os.environ.get('MEASUREMENT_NAME', 'redpi-dht22')
+interval = int(os.environ.get('SAMPLING_INTERVAL', 30))
 
 client = InfluxDBClient(host=host, port=port, database=dbname)
 log = logging.getLogger()
@@ -32,17 +32,13 @@ try:
         
         data = [
         {
-          "measurement": measurement,
-              "tags": {
-                  "location": location,
-              },
-              "time": iso,
-              "fields": {
-                  "temperature" : temperature,
-                  "humidity": humidity
-              }
-          }
-        ]
+            "measurement": measurement,
+            "time": iso,
+            "fields": {
+                "temperature" : temperature,
+                "humidity": humidity
+            }
+        }]
         # Send the JSON data to InfluxDB
         try:
             client.write_points(data)
