@@ -47,8 +47,8 @@ try:
         # Send the JSON data to InfluxDB
         try:
             client.write_points(data)
-        except Exception as exc_info:
-            log.error('Failed to write to db.', exc_info=exc_info)
+        except:
+            log.error('Failed to write to db.')
             pass
         # Wait until it's time to query again...
         time.sleep(interval)
