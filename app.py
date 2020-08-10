@@ -29,6 +29,10 @@ log.info('Finished initialization.')
 try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, sensor_gpio)
+        if not humidity or not temperature:
+            log.error('Failed to get sensor data.')
+            time.sleep(interval)
+            continue
         iso = time.asctime(time.gmtime())
         log.debug("[%s] Temp: %s, Humidity: %s" % (iso, temperature, humidity))
         
